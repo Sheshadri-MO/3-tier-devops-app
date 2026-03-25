@@ -1,0 +1,19 @@
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Update system
+      apt:
+        update_cache: yes
+
+    - name: Install tools
+      apt:
+        name:
+          - curl
+          - git
+        state: present
+
+    - name: Install Node Exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present

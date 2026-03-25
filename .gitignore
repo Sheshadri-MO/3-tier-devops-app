@@ -1,5 +1,1 @@
-.terraform/
-*.tfstate
-*.tfstate.backup
-node_modules/
-*.ova
+

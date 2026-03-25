@@ -1,1 +1,34 @@
-f
+- hosts: monitoring
+  become: yes
+
+  tasks:
+    - name: Install Prometheus
+      apt:
+        name: prometheus
+        state: present
+
+    - name: Add Grafana GPG key
+      apt_key:
+        url: https://apt.grafana.com/gpg.key
+        state: present
+
+    - name: Add Grafana apt repository
+      apt_repository:
+        repo: "deb https://apt.grafana.com stable main"
+        state: present
+        filename: grafana
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Grafana
+      apt:
+        name: grafana
+        state: present
+
+    - name: Start Grafana
+      service:
+        name: grafana-server
+        state: started
+        enabled: yes

@@ -1,1 +1,56 @@
-y
+- hosts: app
+  become: yes
+
+  vars:
+    redis_ip: 192.168.56.120
+
+  tasks:
+    - name: Install Node + npm + MySQL + Nginx
+      apt:
+        name:
+          - nodejs
+          - npm
+          - mysql-server
+          - nginx
+        state: present
+
+    - name: Start MySQL
+      service:
+        name: mysql
+        state: started
+
+    - name: Setup DB
+      shell: |
+        mysql -e "CREATE DATABASE myapp;"
+        mysql -e "CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'password';"
+        mysql -e "GRANT ALL ON myapp.* TO 'appuser'@'localhost';"
+
+    - name: Copy backend
+      copy:
+        src: ../backend/
+        dest: /home/ubuntu/backend/
+
+    - name: Install backend deps
+      command: npm install
+      args:
+        chdir: /home/ubuntu/backend
+
+    - name: Set Redis IP env
+      lineinfile:
+        path: /home/ubuntu/backend/.env
+        line: "REDIS_HOST={{ redis_ip }}"
+        create: yes
+
+    - name: Run backend
+      shell: nohup node app.js > app.log 2>&1 &
+
+    - name: Copy frontend
+      copy:
+        src: ../frontend/
+        dest: /var/www/html/
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+

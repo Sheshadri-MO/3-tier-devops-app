@@ -1,0 +1,30 @@
+- hosts: loadbalancer
+  become: yes
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Configure LB
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          upstream backend {
+              server 192.168.1.207:3000;
+              server 192.168.1.206:3000;
+          }
+
+          server {
+              listen 80;
+
+              location / {
+                  proxy_pass http://backend;
+              }
+          }
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

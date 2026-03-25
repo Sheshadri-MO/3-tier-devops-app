@@ -1,0 +1,15 @@
+- hosts: cache
+  become: yes
+
+  tasks:
+    - name: Install Redis
+      apt:
+        name: redis-server
+        state: present
+
+    - name: Enable Redis
+      service:
+        name: redis-server
+        state: started
+        enabled: yes
+    

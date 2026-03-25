@@ -211,8 +211,8 @@ Example:
 
 ## Monitoring
 
-* **Prometheus:** http://<MONITORING IP>:9090
-* **Grafana:** http://<MONITORING IP>:3000
+* **Prometheus:** http://<MONITORING_IP>:9090
+* **Grafana:** http://<MONITORING_IP>:3000
 
 ---
 
